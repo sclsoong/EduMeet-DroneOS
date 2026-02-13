@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
     <title>EduMeet OS · 会议无人机系统</title>
-    <!-- 使用现代柔和字体 Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* 重置与全局变量 */
         * {
             margin: 0;
             padding: 0;
@@ -32,10 +30,8 @@
             border-radius: 40px;
             box-shadow: 0 25px 50px -12px rgba(0, 20, 30, 0.08);
             padding: 2.5rem 2rem;
-            transition: all 0.2s;
         }
 
-        /* 头部区域 */
         .header {
             display: flex;
             flex-wrap: wrap;
@@ -50,6 +46,7 @@
             letter-spacing: -0.02em;
             background: linear-gradient(145deg, #0a2c3d, #1b4e6b);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0.5rem;
         }
@@ -128,7 +125,6 @@
             color: #b33a3a;
         }
 
-        /* 引言区域 */
         .quote {
             background: linear-gradient(105deg, #f1f8fd 0%, #eaf0f6 100%);
             border-radius: 32px;
@@ -156,7 +152,6 @@
             top: 0.8rem;
         }
 
-        /* 核心特性卡片网格 */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -196,7 +191,6 @@
             font-size: 0.95rem;
         }
 
-        /* 壁纸模块 */
         .wallpaper {
             background: #132e3c;
             background-image: radial-gradient(circle at 20% 30%, #1f536a, #0a1e2b);
@@ -249,7 +243,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* 宣言区块 */
         .manifesto {
             display: flex;
             flex-wrap: wrap;
@@ -276,7 +269,6 @@
             border-left: 2px solid #b2d1dd;
         }
 
-        /* 伙伴招募 */
         .recruit {
             background: white;
             border: 1px dashed #7498a9;
@@ -354,7 +346,6 @@
             background: #ebf5f9;
         }
 
-        /* 页脚 */
         .footer {
             margin-top: 2rem;
             padding-top: 2rem;
@@ -387,7 +378,6 @@
             color: #6c8a98;
         }
 
-        /* 响应式调整 */
         @media (max-width: 700px) {
             .container { padding: 1.8rem; }
             .header { flex-direction: column; }
@@ -401,133 +391,129 @@
     </style>
 </head>
 <body>
-<div class="container">
-    
-    <!-- 头部：品牌 + 状态卡片 -->
-    <div class="header">
-        <div class="title-section">
-            <h1>EduMeet OS</h1>
-            <div class="subtitle">为飞行界面而生的极简系统 · 会议版 1.3</div>
-        </div>
-        <div class="status-card">
-            <div class="version-badge">87% · 强</div>
-            <div class="battery">
-                26min <span>续航</span>
-                <svg width="28" height="14" viewBox="0 0 28 14" fill="none" style="margin-left: 6px;">
-                    <rect x="1" y="1" width="22" height="12" rx="3" stroke="#1b5a73" stroke-width="1.5"/>
-                    <rect x="3" y="3" width="18" height="8" rx="2" fill="#0f6b4b" fill-opacity="0.8"/>
-                    <rect x="24" y="4" width="2" height="6" rx="1" fill="#1b5a73"/>
-                </svg>
+    <div class="container">
+        <div class="header">
+            <div class="title-section">
+                <h1>EduMeet OS</h1>
+                <div class="subtitle">为飞行界面而生的极简系统 · 会议版 1.3</div>
             </div>
-            <div class="flight-level">
-                <span class="tag perfect">完美飞行</span>
-                <span class="tag caution">谨慎飞行</span>
-                <span class="tag danger">不建议起飞</span>
-            </div>
-            <div style="font-size: 0.8rem; margin-top: 0.5rem; color: #3f6b7a;">2月11日 周三 · 室内 无风</div>
-        </div>
-    </div>
-
-    <!-- 语录 -->
-    <div class="quote">
-        <p>让每一场重要的发言，都被优雅地记录</p>
-    </div>
-
-    <!-- 核心功能卡片网格 -->
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">🖊️</div>
-            <div class="feature-title">笔即密钥</div>
-            <div class="feature-desc">磁吸物理认证，插笔启动/拔笔锁定。硬件级加密，丢失可远程冻结。</div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎙️</div>
-            <div class="feature-title">静默控制</div>
-            <div class="feature-desc">定向麦克风+骨传导。拿起笔轻声说“下面那个”，无人机即刻理解。全程不干扰会议。</div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎬</div>
-            <div class="feature-title">智能导演</div>
-            <div class="feature-desc">会前5分钟设置剧本。人脸/语音/手势自动触发专业运镜。指向纠正，精确锁定。</div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🧊</div>
-            <div class="feature-title">适合飞行</div>
-            <div class="feature-desc">室内 · 无风 · 电量充足。87%电量，续航26min，一切尽在掌握。</div>
-        </div>
-    </div>
-
-    <!-- Bing 每日背景 -->
-    <div class="wallpaper">
-        <div class="wallpaper-info">
-            <h3>🌅 Bing 每日壁纸</h3>
-            <p>起飞前，你看到的下一张图是冰岛的极光，或是南极的帝企鹅。<br>概念展示 · 实际每日同步更新</p>
-        </div>
-        <div class="wallpaper-stats">
-            <div class="stat-item">
-                <div class="stat-number">4K</div>
-                <div class="stat-label">画质</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">190+</div>
-                <div class="stat-label">国家</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">每日</div>
-                <div class="stat-label">同步</div>
+            <div class="status-card">
+                <div class="version-badge">87% · 强</div>
+                <div class="battery">
+                    26min <span>续航</span>
+                    <svg width="28" height="14" viewBox="0 0 28 14" fill="none" style="margin-left: 6px;">
+                        <rect x="1" y="1" width="22" height="12" rx="3" stroke="#1b5a73" stroke-width="1.5"/>
+                        <rect x="3" y="3" width="18" height="8" rx="2" fill="#0f6b4b" fill-opacity="0.8"/>
+                        <rect x="24" y="4" width="2" height="6" rx="1" fill="#1b5a73"/>
+                    </svg>
+                </div>
+                <div class="flight-level">
+                    <span class="tag perfect">完美飞行</span>
+                    <span class="tag caution">谨慎飞行</span>
+                    <span class="tag danger">不建议起飞</span>
+                </div>
+                <div style="font-size: 0.8rem; margin-top: 0.5rem; color: #3f6b7a;">2月11日 周三 · 室内 无风</div>
             </div>
         </div>
-    </div>
 
-    <!-- 宣言：对比与愿景 -->
-    <div class="manifesto">
-        <div class="manifesto-left">
-            无人机的操作系统<br>不应该「二选一」
+        <div class="quote">
+            <p>让每一场重要的发言，都被优雅地记录</p>
         </div>
-        <div class="manifesto-right">
-            <p style="margin-bottom: 0.8rem; font-weight: 600;">当前开源飞控强大但艰深，大疆易用但封闭。</p>
-            <p style="margin-bottom: 0.5rem;">EduMeet OS 要做那个<strong style="color: #0c5a73;">「开源且友好」的Android</strong>。</p>
-            <p>让电池电量、飞行状态、运镜预设……都像颜色一样直观。</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🖊️</div>
+                <div class="feature-title">笔即密钥</div>
+                <div class="feature-desc">磁吸物理认证，插笔启动/拔笔锁定。硬件级加密，丢失可远程冻结。</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎙️</div>
+                <div class="feature-title">静默控制</div>
+                <div class="feature-desc">定向麦克风+骨传导。拿起笔轻声说“下面那个”，无人机即刻理解。全程不干扰会议。</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <div class="feature-title">智能导演</div>
+                <div class="feature-desc">会前5分钟设置剧本。人脸/语音/手势自动触发专业运镜。指向纠正，精确锁定。</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧊</div>
+                <div class="feature-title">适合飞行</div>
+                <div class="feature-desc">室内 · 无风 · 电量充足。87%电量，续航26min，一切尽在掌握。</div>
+            </div>
+        </div>
+
+        <div class="wallpaper">
+            <div class="wallpaper-info">
+                <h3>🌅 Bing 每日壁纸</h3>
+                <p>起飞前，你看到的下一张图是冰岛的极光，或是南极的帝企鹅。<br>概念展示 · 实际每日同步更新</p>
+            </div>
+            <div class="wallpaper-stats">
+                <div class="stat-item">
+                    <div class="stat-number">4K</div>
+                    <div class="stat-label">画质</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">190+</div>
+                    <div class="stat-label">国家</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">每日</div>
+                    <div class="stat-label">同步</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="manifesto">
+            <div class="manifesto-left">
+                无人机的操作系统<br>不应该「二选一」
+            </div>
+            <div class="manifesto-right">
+                <p style="margin-bottom: 0.8rem; font-weight: 600;">当前开源飞控强大但艰深，大疆易用但封闭。</p>
+                <p style="margin-bottom: 0.5rem;">EduMeet OS 要做那个<strong style="color: #0c5a73;">「开源且友好」的Android</strong>。</p>
+                <p>让电池电量、飞行状态、运镜预设……都像颜色一样直观。</p>
+            </div>
+        </div>
+
+        <div class="recruit">
+            <h3>🚁 寻找早期伙伴</h3>
+            <p style="color: #3b6f81; margin-bottom: 0.8rem;">如果你也对以下任意领域感兴趣，我们就在同一页。</p>
+            <div class="tags-group">
+                <span class="interest-tag">嵌入式系统</span>
+                <span class="interest-tag">飞控开发</span>
+                <span class="interest-tag">计算机视觉</span>
+                <span class="interest-tag">工业设计</span>
+                <span class="interest-tag">OS 交互</span>
+                <span class="interest-tag">教育科技</span>
+            </div>
+            <div class="action-buttons">
+                <a href="https://github.com/sclsoong/EduMeet-DroneOS" class="btn btn-primary" target="_blank">Star 项目</a>
+                <a href="#" class="btn btn-secondary">分享想法</a>
+            </div>
+            <div style="margin-top: 1.2rem; font-size: 0.8rem; color: #6a8d99;">
+                版本号 1.3 · 概念验证
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="copyright">
+                © 2026 EduMeet OS · 合作预览 - 非商业概念
+            </div>
+            <div class="footer-links">
+                <a href="#">愿景</a>
+                <a href="#">路线图</a>
+                <a href="https://github.com/sclsoong/EduMeet-DroneOS">GitHub</a>
+            </div>
         </div>
     </div>
-
-    <!-- 寻找伙伴 -->
-    <div class="recruit">
-        <h3>🚁 寻找早期伙伴</h3>
-        <p style="color: #3b6f81; margin-bottom: 0.8rem;">如果你也对以下任意领域感兴趣，我们就在同一页。</p>
-        <div class="tags-group">
-            <span class="interest-tag">嵌入式系统</span>
-            <span class="interest-tag">飞控开发</span>
-            <span class="interest-tag">计算机视觉</span>
-            <span class="interest-tag">工业设计</span>
-            <span class="interest-tag">OS 交互</span>
-            <span class="interest-tag">教育科技</span>
-        </div>
-        <div class="action-buttons">
-            <a href="https://github.com/sclsoong/EduMeet-DroneOS" class="btn btn-primary" target="_blank">Star 项目</a>
-            <a href="#" class="btn btn-secondary">分享想法</a>
-        </div>
-        <div style="margin-top: 1.2rem; font-size: 0.8rem; color: #6a8d99;">
-            版本号 1.3 · 概念验证
-        </div>
+    <div style="text-align: center; margin-top: 1.2rem; font-size: 0.7rem; color: #9eb7c2;">
+        内置 Bing 每日精选 · 实际壁纸每日更新
     </div>
-
-    <!-- 页脚 -->
-    <div class="footer">
-        <div class="copyright">
-            © 2026 EduMeet OS · 合作预览 - 非商业概念
-        </div>
-        <div class="footer-links">
-            <a href="#">愿景</a>
-            <a href="#">路线图</a>
-            <a href="https://github.com/sclsoong/EduMeet-DroneOS">GitHub</a>
-        </div>
-    </div>
-</div>
-
-<!-- 极简脚注（不影响主视觉） -->
-<div style="text-align: center; margin-top: 1.2rem; font-size: 0.7rem; color: #9eb7c2;">
-    内置 Bing 每日精选 · 实际壁纸每日更新
-</div>
 </body>
 </html>
+<div style="text-align: center; margin: 3rem 0; padding: 1.5rem; background: #f0f7fc; border-radius: 24px;">
+  <h2 style="margin-bottom: 0.5rem;">✈️ 会议无人机 · 独家硬件</h2>
+  <p style="margin-bottom: 1rem;">笔控加密、静默追踪，为高端会议而生的专属无人机。</p>
+  <a href="https://sclsoong.github.io/EduMeet-Drone" style="display: inline-block; background: #1a6f8c; color: white; padding: 0.8rem 2rem; border-radius: 40px; text-decoration: none; font-weight: 600;">前往了解 →</a>
+</div>
+
