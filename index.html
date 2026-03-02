@@ -62,6 +62,639 @@
 <html lang="zh-CN">
 <head>
     快速预览EduMeetos1
+
+
+    <!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞行控制台 · SE版 · 留言板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        body {
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+        .desktop {
+            width: 800px;
+            max-width: 95vw;
+            padding: 1rem;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23333"/><circle cx="50" cy="50" r="20" fill="%23555"/></svg>');
+            background-size: cover;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        /* 磁贴网格 - 添加滚动支持 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .grid::-webkit-scrollbar {
+            width: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        .grid::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        .tile {
+            background: rgba(30, 30, 30, 0.9);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: default;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(255,255,255,0.1) inset;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5), 0 2px 4px rgba(255,255,255,0.2) inset;
+        }
+        .tile.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            padding: 20px;
+        }
+        .tile.wide {
+            grid-column: span 2;
+        }
+        .tile .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        .tile .label {
+            font-size: 1.1rem;
+        }
+        .tile .status {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        /* 设置按钮 */
+        .settings-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* 个性化侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 320px;
+            height: 100vh;
+            background: #1e1e1e;
+            color: white;
+            padding: 2rem 1.5rem;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+            transition: right 0.3s ease;
+            z-index: 20;
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+        .sidebar h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.5rem;
+        }
+        .sidebar h3 {
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+        .sidebar label {
+            display: block;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        .sidebar input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .sidebar .color-row {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .color-btn.selected {
+            border-color: white;
+        }
+        .sidebar .size-radio {
+            display: block;
+            margin: 10px 0;
+        }
+        .sidebar button {
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .sidebar button.reset {
+            background: #555;
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 15;
+        }
+        .overlay.show {
+            display: block;
+        }
+
+        /* ========== 留言板样式 ========== */
+        .board-container {
+            width: 800px;
+            max-width: 95vw;
+            margin-top: 2rem;
+        }
+        .message-board {
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+        }
+        .board-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        .board-rule {
+            color: #ffaa00;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,170,0,0.1);
+            border-left: 3px solid #ffaa00;
+            border-radius: 4px;
+        }
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        .form-row input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        .form-row input:focus {
+            border-color: #007aff;
+        }
+        .form-row textarea {
+            flex: 2;
+            padding: 0.8rem 1rem;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 20px;
+            color: white;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+        }
+        .form-row textarea:focus {
+            border-color: #007aff;
+        }
+        .btn-submit {
+            align-self: flex-end;
+            padding: 0.8rem 2rem;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: #005bbf;
+        }
+        .comment-list {
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            padding: 1rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .comment-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        .comment-time {
+            color: #888;
+        }
+        .comment-content {
+            word-break: break-word;
+            color: #ddd;
+        }
+        .empty-message {
+            color: #666;
+            text-align: center;
+            padding: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <div class="settings-btn" id="settingsBtn">⚙️</div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- 留言板区域（已包含“我已知晓”首次确认） -->
+    <div class="board-container">
+        <div class="message-board">
+            <div class="board-title">💬 留言板</div>
+            <div class="board-rule">
+                ⚠️ 你的留言将会被公开，请文明发言。姓名可选，留言内容必填。<br>
+                首次提交时需确认同意。留言仅保存在你当前的浏览器中，40天后自动删除。
+            </div>
+            <div class="comment-form">
+                <div class="form-row">
+                    <input type="text" id="commentName" placeholder="你的名字 (选填)">
+                    <textarea id="commentMessage" placeholder="说点什么... (必填)"></textarea>
+                </div>
+                <button class="btn-submit" id="submitComment">提交留言</button>
+            </div>
+            <div class="comment-list" id="commentList">
+                <!-- 动态生成留言列表 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 个性化侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <h2>个性化终端</h2>
+        <h3>显示/隐藏磁贴</h3>
+        <div id="toggle-list"></div>
+        <h3>主题颜色</h3>
+        <div class="color-row">
+            <div class="color-btn" style="background:#007acc;" data-color="#007acc"></div>
+            <div class="color-btn" style="background:#e81123;" data-color="#e81123"></div>
+            <div class="color-btn" style="background:#107c10;" data-color="#107c10"></div>
+            <div class="color-btn" style="background:#ff8c00;" data-color="#ff8c00"></div>
+            <div class="color-btn" style="background:#9b59b6;" data-color="#9b59b6"></div>
+        </div>
+        <h3>磁贴大小</h3>
+        <label class="size-radio"><input type="radio" name="tileSize" value="small"> 小 (70x70)</label>
+        <label class="size-radio"><input type="radio" name="tileSize" value="medium" checked> 中 (150x150)</label>
+        <label class="size-radio"><input type="radio" name="tileSize" value="large"> 大 (310x310)</label>
+        <button id="resetBtn" class="reset">重置默认</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        // ********** 飞行控制台脚本（磁贴功能）**********
+        (function() {
+            const tilesData = [
+                { id: 'profile', label: '宋先生', icon: '👤', type: 'large', defaultVisible: true, extra: '已同步云空间' },
+                { id: 'flight', label: '飞行状态', icon: '✈️', type: 'large', defaultVisible: true },
+                { id: 'takeoff', label: '一键起飞', icon: '🛫', type: 'medium', defaultVisible: true },
+                { id: 'land', label: '一键返航', icon: '🛬', type: 'medium', defaultVisible: true },
+                { id: 'hover', label: '紧急悬停', icon: '⏸️', type: 'medium', defaultVisible: true },
+                { id: 'photo', label: '拍照', icon: '📸', type: 'small', defaultVisible: true },
+                { id: 'video', label: '录像', icon: '🎥', type: 'small', defaultVisible: true },
+                { id: 'gallery', label: '图传', icon: '🖼️', type: 'small', defaultVisible: true },
+                { id: 'settings', label: '设置', icon: '⚙️', type: 'small', defaultVisible: true },
+                { id: 'log', label: '飞行日志', icon: '📋', type: 'wide', defaultVisible: true, extra: '今日3次 · 5.2km' },
+                { id: 'help', label: '帮助中心', icon: '❓', type: 'wide', defaultVisible: true, extra: '常见问题与教程' }
+            ];
+
+            let currentColor = '#007acc';
+            let currentSize = 'medium';
+            let settings = JSON.parse(localStorage.getItem('flyseSettings')) || {};
+            let visibleTiles = settings.visible || tilesData.map(t => t.defaultVisible ? t.id : null).filter(v => v);
+            if (!visibleTiles.includes('profile')) visibleTiles.push('profile');
+            if (settings.color) currentColor = settings.color;
+            if (settings.size) currentSize = settings.size;
+
+            function renderGrid() {
+                const grid = document.getElementById('grid');
+                grid.innerHTML = '';
+                if (currentSize === 'small') {
+                    grid.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                } else if (currentSize === 'medium') {
+                    grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                } else {
+                    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                }
+
+                tilesData.forEach(tile => {
+                    if (!visibleTiles.includes(tile.id)) return;
+                    const div = document.createElement('div');
+                    div.className = 'tile';
+                    if (tile.type === 'large') div.classList.add('large');
+                    if (tile.type === 'wide') div.classList.add('wide');
+                    div.style.backgroundColor = currentColor + '20';
+                    div.style.border = `1px solid ${currentColor}60`;
+                    div.innerHTML = `
+                        <div class="icon">${tile.icon}</div>
+                        <div class="label">${tile.label}</div>
+                        ${tile.extra ? `<div class="status">${tile.extra}</div>` : ''}
+                    `;
+                    grid.appendChild(div);
+                });
+            }
+
+            function renderToggleList() {
+                const container = document.getElementById('toggle-list');
+                container.innerHTML = '';
+                tilesData.forEach(tile => {
+                    const label = document.createElement('label');
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.value = tile.id;
+                    cb.checked = visibleTiles.includes(tile.id);
+                    cb.addEventListener('change', function(e) {
+                        if (e.target.checked) {
+                            if (!visibleTiles.includes(tile.id)) visibleTiles.push(tile.id);
+                        } else {
+                            visibleTiles = visibleTiles.filter(id => id !== tile.id);
+                        }
+                        saveAndRender();
+                    });
+                    label.appendChild(cb);
+                    label.appendChild(document.createTextNode(tile.label));
+                    container.appendChild(label);
+                });
+            }
+
+            function saveAndRender() {
+                settings = { visible: visibleTiles, color: currentColor, size: currentSize };
+                localStorage.setItem('flyseSettings', JSON.stringify(settings));
+                renderGrid();
+            }
+
+            function initColorButtons() {
+                const btns = document.querySelectorAll('.color-btn');
+                btns.forEach(btn => {
+                    btn.classList.remove('selected');
+                    if (btn.dataset.color === currentColor) btn.classList.add('selected');
+                    btn.addEventListener('click', function() {
+                        btns.forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        currentColor = this.dataset.color;
+                        saveAndRender();
+                    });
+                });
+            }
+
+            function initSizeRadios() {
+                const radios = document.querySelectorAll('input[name="tileSize"]');
+                radios.forEach(radio => {
+                    radio.checked = (radio.value === currentSize);
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            currentSize = this.value;
+                            saveAndRender();
+                        }
+                    });
+                });
+            }
+
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                visibleTiles = tilesData.filter(t => t.defaultVisible).map(t => t.id);
+                currentColor = '#007acc';
+                currentSize = 'medium';
+                renderToggleList();
+                initColorButtons();
+                initSizeRadios();
+                saveAndRender();
+            });
+
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            document.getElementById('settingsBtn').addEventListener('click', function() {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            });
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+
+            renderToggleList();
+            renderGrid();
+            initColorButtons();
+            initSizeRadios();
+        })();
+
+        // ********** 留言板独立脚本（含首次确认）**********
+        (function() {
+            const DAYS_TO_KEEP = 40;
+            const STORAGE_KEY = 'flyseMessages';
+            const AGREED_KEY = 'flyseAgreed'; // 用于记录是否已同意
+
+            // 获取存储的留言，并过滤过期
+            function getMessages() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                const messages = stored ? JSON.parse(stored) : [];
+                const now = Date.now();
+                const cutoff = now - DAYS_TO_KEEP * 24 * 60 * 60 * 1000;
+                return messages.filter(msg => msg.timestamp >= cutoff);
+            }
+
+            // 保存留言数组
+            function saveMessages(messages) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+            }
+
+            // 渲染留言列表
+            function renderMessages() {
+                const container = document.getElementById('commentList');
+                const messages = getMessages();
+                if (messages.length === 0) {
+                    container.innerHTML = '<div class="empty-message">还没有留言，来发第一条吧～</div>';
+                    return;
+                }
+                // 按时间倒序（最新的在前）
+                messages.sort((a,b) => b.timestamp - a.timestamp);
+                let html = '';
+                messages.forEach(msg => {
+                    const date = new Date(msg.timestamp);
+                    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+                    const displayName = msg.name && msg.name.trim() ? escapeHtml(msg.name) : '匿名';
+                    html += `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-name">${displayName}</span>
+                                <span class="comment-time">${dateStr}</span>
+                            </div>
+                            <div class="comment-content">${escapeHtml(msg.message)}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // 简单的防XSS转义
+            function escapeHtml(str) {
+                return String(str).replace(/[&<>"]/g, function(m) {
+                    if (m === '&') return '&amp;';
+                    if (m === '<') return '&lt;';
+                    if (m === '>') return '&gt;';
+                    if (m === '"') return '&quot;';
+                    return m;
+                });
+            }
+
+            // 检查是否已同意过
+            function hasAgreed() {
+                return localStorage.getItem(AGREED_KEY) === 'yes';
+            }
+
+            // 标记为已同意
+            function setAgreed() {
+                localStorage.setItem(AGREED_KEY, 'yes');
+            }
+
+            // 提交留言（含首次确认）
+            function tryAddMessage(name, message) {
+                if (!message.trim()) {
+                    alert('留言内容不能为空！');
+                    return false;
+                }
+
+                // 如果还未同意，弹出确认框
+                if (!hasAgreed()) {
+                    const confirmed = confirm(
+                        '我们需要您同意：您的留言将会被公开显示，且仅保存在你当前的浏览器中，40天后自动删除。\n' +
+                        '请文明发言，不得辱骂或发表无关内容。\n\n' +
+                        '点击“确定”即表示你已知晓并同意上述条款。'
+                    );
+                    if (!confirmed) {
+                        return false;
+                    }
+                    setAgreed();
+                }
+
+                // 提交留言
+                const messages = getMessages();
+                messages.push({
+                    name: name.trim() || '',
+                    message: message.trim(),
+                    timestamp: Date.now()
+                });
+                saveMessages(messages);
+                renderMessages();
+                return true;
+            }
+
+            // 绑定提交事件
+            const submitBtn = document.getElementById('submitComment');
+            submitBtn.addEventListener('click', function() {
+                const nameInput = document.getElementById('commentName');
+                const msgInput = document.getElementById('commentMessage');
+                if (tryAddMessage(nameInput.value, msgInput.value)) {
+                    nameInput.value = '';
+                    msgInput.value = '';
+                }
+            });
+
+            // 允许回车提交（可选）
+            document.getElementById('commentMessage').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitBtn.click();
+                }
+            });
+
+            // 初始化渲染
+            renderMessages();
+        })();
+    </script>
+</body>
+</html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
     <title>EduMeet OS · 会议无人机系统</title>
